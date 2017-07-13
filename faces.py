@@ -104,3 +104,6 @@ fg = fit_generator(filenames, 2, (250,250,3))
 history = model.fit_generator(fg
                               , steps_per_epoch=10
                               , epochs=10)
+
+ model.save("face_model.h5")
+
