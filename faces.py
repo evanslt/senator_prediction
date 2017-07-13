@@ -105,5 +105,5 @@ history = model.fit_generator(fg
                               , steps_per_epoch=10
                               , epochs=10)
 
- model.save("face_model.h5")
+model.save("face_model.h5")
 
