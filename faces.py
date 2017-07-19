@@ -89,7 +89,9 @@ def basic_cnn_model_v1(image_shape, metrics=['accuracy']):
 
 filenames = [];
 
-rootdir = './male/'
+
+rootdir = '/Images/Images/male/'
+
 cnt = 0;
 for root, subFolders, files in os.walk(rootdir):
     for file in files:
@@ -98,7 +100,7 @@ for root, subFolders, files in os.walk(rootdir):
         if(cnt>10):
             break;
 
-rootdir = './female/'
+rootdir = '/Images/Images/female/'
 for root, subFolders, files in os.walk(rootdir):
     for file in files:
         filenames.append(rootdir+'/'+file)
@@ -119,5 +121,4 @@ history = model.fit_generator(fg
                               , steps_per_epoch=1
                               , epochs=1)
 
-model.save("face_model.h5")
-
+model.save("/output/face_model.h5")
