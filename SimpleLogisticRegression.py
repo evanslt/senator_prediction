@@ -10,7 +10,9 @@ from sklearn import linear_model
 from sklearn.metrics import classification_report,confusion_matrix
 
 plt.style.use('seaborn-poster')
-get_ipython().magic('matplotlib inline')
+
+# from IPython import get_ipython
+# get_ipython().magic('matplotlib inline')
 
 
 # In[115]:
