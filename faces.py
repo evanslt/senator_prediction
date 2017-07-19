@@ -38,8 +38,8 @@ def fit_generator(files, batch_size, input_shape,print_stats=True,
             total_cnt += batch_cnt
         epoch_sizes.append(total_cnt)
 
-        if print_stats:
-            print("Total samples cnt: {}, execution time: {}".format(total_cnt, time.time() - start_ts))
+        #if print_stats:
+        #    print("Total samples cnt: {}, execution time: {}".format(total_cnt, time.time() - start_ts))
 
         if one_epoch:
             break
@@ -87,15 +87,22 @@ def basic_cnn_model_v1(image_shape, metrics=['accuracy']):
 
 filenames = [];
 
-rootdir = './male/'
+rootdir = '/Images/Images/male/'
+cnt = 0;
 for root, subFolders, files in os.walk(rootdir):
     for file in files:
         filenames.append(rootdir+'/'+file)
+        cnt += 1;
+        if(cnt>10):
+            break;
 
-rootdir = './female/'
+rootdir = '/Images/Images/female/'
 for root, subFolders, files in os.walk(rootdir):
     for file in files:
         filenames.append(rootdir+'/'+file)
+        cnt += 1;
+        if(cnt>20):
+            break;
 
 model = basic_cnn_model_v0((250,250,3))
 
@@ -105,5 +112,4 @@ history = model.fit_generator(fg
                               , steps_per_epoch=10
                               , epochs=10)
 
-model.save("face_model.h5")
-
+model.save("/output/face_model.h5")
