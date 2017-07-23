@@ -9,5 +9,6 @@ lib64
 parts
 sdist
 var
+Images
 female-tmp
 male-tmp
