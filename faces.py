@@ -32,8 +32,7 @@ def fit_generator(files, batch_size, input_shape,print_stats=True,
             if batch_cnt >= batch_size:
                 yield X, Y
                 total_cnt += batch_cnt
-                batch_cnt = 0
-                        
+                batch_cnt = 0          
 
         if batch_cnt > 0:
             yield X[:batch_cnt, ...], Y[:batch_cnt, ...]
