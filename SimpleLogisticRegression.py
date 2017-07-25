@@ -5,12 +5,16 @@
 
 import pandas as pd
 import seaborn as sns
+import numpy as np
+import itertools
 import matplotlib.pyplot as plt
 from sklearn import linear_model
 from sklearn.metrics import classification_report,confusion_matrix
 
 plt.style.use('seaborn-poster')
-get_ipython().magic('matplotlib inline')
+
+# from IPython import get_ipython
+# get_ipython().magic('matplotlib inline')
 
 
 # In[115]:
@@ -25,7 +29,7 @@ def plot_confusion_matrix(cm, classes,
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
     """
-    fig = plt.figure(figsize=(10, 8)) 
+    fig = plt.figure()
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()
@@ -52,22 +56,22 @@ def plot_confusion_matrix(cm, classes,
 
 # In[96]:
 
-senator_data = pd.read_csv('SenateElectionHistory.tsv',sep='\t')    # import data to dataframe
+senator_data = pd.read_csv('election_history.csv')    # import data to dataframe
 
 #convert state names to integer IDs
-state_to_int = dict(zip(set(senator_data['State']),[i for i in range(50)]))    
+state_to_int = dict(zip(set(senator_data['State']),[i for i in range(50)]))
 senator_data['State'] = [state_to_int[i] for i in senator_data['State']]
 
 # Split into training and test data-sets
 
 # pre-2015 = training set
-training_data = senator_data.loc[senator_data['Year'] < 2015,]      
+training_data = senator_data.loc[senator_data['Year'] < 2015,]
 training_features = training_data.drop(['Democrat Winner','Democrat Margin'],inplace=False,axis=1)   #remove labels
 training_labels = training_data['Democrat Winner']       #save labels to separate vector
 print("Training data size: " + str(training_data.shape[0]))
 
 # post-2015 = test set
-testing_data = senator_data.loc[senator_data['Year'] >= 2015,]      
+testing_data = senator_data.loc[senator_data['Year'] >= 2015,]
 testing_features = testing_data.drop(['Democrat Winner','Democrat Margin'],inplace=False,axis=1)   #remove labels
 testing_labels = testing_data['Democrat Winner']       #save labels to separate vector
 print("Testing data size: " + str(testing_data.shape[0]))
@@ -81,8 +85,8 @@ print("\nFeatures: \n" + '\n'.join(senator_data.columns))
 # In[97]:
 
 #fit logistic regression model
-logreg = linear_model.LogisticRegression(C=1e5)    
-logreg.fit(training_features, training_label)
+logreg = linear_model.LogisticRegression(C=1e5)
+logreg.fit(training_features, training_labels)
 
 
 # In[104]:
@@ -117,4 +121,3 @@ testing_features[[testing_labels[i] != predicted [i] for i in range(len(predicte
 
 #TODO: could use predict_proba to see which predictions had stronger probabilities (?)
 #logreg.predict_proba(testing_features)
-
