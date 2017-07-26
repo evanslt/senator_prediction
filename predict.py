@@ -19,7 +19,7 @@ model = load_model("/out/face_model.h5")
 name = "Brad_Wilk_0001"
 
 #this currently predicts for one image
-img = np.array(Image.open("/Images/Images/male/"+name+".jpg")
+img = np.array(Image.open("/Images/Images/male/"+name+".jpg"))
 to_predict = np.zeros((1,) + img.shape)
 to_predict[0,...] = img
 print(model.predict(to_predict))
