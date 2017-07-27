@@ -39,6 +39,18 @@ def fit_generator(files, batch_size, input_shape, epoch_sizes = []):
 			total_cnt += batch_cnt
 		epoch_sizes.append(total_cnt)
 
+def compile_training_set(files, input_shape):
+	num_train = len(files)
+	X = np.zeros((num_train,) + input_shape)
+	Y = np.zeros(num_train)
+
+	for idx, f in enumerate(files):
+		X[idx, ...] = np.expand_dims(np.array(Image.open(f)), 2) # expand the dimension since keras expects a color channel
+		Y[idx, ...] = float('Winner' in f)
+
+	return X, Y
+
+
 def cnn_model_v1(image_shape):
 	# we'll first try a simple CNN with only one convolutional layer, one max pooling, and one dense layer
 	# the worry is that we'll overfit with too many parameters, since our dataset is so small
@@ -55,26 +67,79 @@ def cnn_model_v1(image_shape):
 	model.compile(loss='binary_crossentropy', optimizer='adam')
 	return model
 
+def cnn_model_v2(image_shape):
+	model = Sequential()
+	model.add(Conv2D(filters = 32, kernel_size = (3, 3), 
+		activation = 'relu', input_shape = image_shape,
+		name = 'conv-1'))
+	model.add(MaxPooling2D(pool_size = (2,2), name = 'maxpool-1'))
+	model.add(Dropout(0.5, name = 'dropout-1'))
+	model.add(Conv2D(filters = 8, kernel_size = (2, 2), 
+		activation = 'relu', input_shape = image_shape,
+		name = 'conv-2'))
+	model.add(MaxPooling2D(pool_size = (2,2), name = 'maxpool-2'))
+	model.add(Dropout(0.5, name = 'dropout-2'))
+	model.add(Flatten())
+	model.add(Dense(64, activation = 'relu', name = 'dense-1'))
+	model.add(Dropout(0.5, name = 'dropout-3'))
+	model.add(Dense(1, activation = 'sigmoid', name = 'dense-2'))
+	model.compile(loss='binary_crossentropy', optimizer='adam')
+	return model
+
+def cnn_model_v3(image_shape):
+    model = Sequential()
+    model.add(Conv2D(32, kernel_size=(3, 3),
+                     activation='relu',
+                     input_shape=image_shape, name = "conv1"))
+    model.add(Conv2D(64, (3, 3), activation='relu', name = "conv2"))
+    model.add(MaxPooling2D(pool_size=(2, 2), name = "maxpool1"))
+    model.add(Dropout(0.25, name = "dropout1"))
+    model.add(Flatten(name = "flatten1"))
+    model.add(Dense(128, activation='relu', name = "dense1"))
+    model.add(Dropout(0.5, name = "dropout2"))
+    model.add(Dense(1, activation='sigmoid', name = "softmax1"))
+
+    model.compile(loss='binary_crossentropy',
+                  optimizer='adam')
+    return model
+
+def feedforward_model(image_shape):
+    model = Sequential()
+    model.add(Dense(256, activation = 'relu', name = "dense1", input_shape = image_shape))
+    model.add(Dropout(0.5, name = "dropout1"))
+    model.add(Dense(128, activation = 'relu', name = "dense2"))
+    model.add(Dropout(0.5, name = "dropout2"))
+    model.add(Dense(64, activation = 'relu', name = "dense3"))
+    model.add(Dropout(0.5, name = "dropout3"))
+    model.add(Flatten(name = "flatten1"))
+    model.add(Dense(1, activation='sigmoid', name = "softmax1"))
+    model.compile(loss='binary_crossentropy',
+                  optimizer='adam')
+    return model
+
 filenames = []
 rootdir = 'Images/Senators'
 
 # iterate through the images in the directory
 for root, subFolders, files in os.walk(rootdir):
-	for file in files:
+	for f in files:
 		# only use the normalized images
-		if file[-3:] == 'bmp':
-			filenames.append(rootdir + '/' + file)
-
+		if f[-3:] == 'bmp':
+			filenames.append(rootdir + '/' + f)
 # generate the model
-model = cnn_model_v1((130, 100, 1))
+model = feedforward_model((130, 100, 1))
 
 fg = fit_generator(filenames, 16, (130, 100, 1))
 
 history = model.fit_generator(fg
-                              , steps_per_epoch=17
-                              , epochs=10)
+                              , steps_per_epoch=18
+                              , epochs=15)
 
-model.save("senator_model.h5")
+# calculate accuracy on training set
+X, Y = compile_training_set(filenames, (130, 100, 1))
+print(model.predict(X)[:,0])
+print(Y)
+#model.save("senator_model.h5")
 
 
 
