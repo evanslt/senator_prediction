@@ -16,10 +16,19 @@ from keras.models import load_model
 
 model = load_model("/out/face_model.h5")
 
+name = "Brad_Wilk_0001"
+
 #this currently predicts for one image
-img = np.array(Image.open("/Images/Images/male/Brad_Wilk_0001.jpg"))
+img = np.array(Image.open("/Images/Images/male/"+name+".jpg"))
 to_predict = np.zeros((1,) + img.shape)
 to_predict[0,...] = img
 print(model.predict(to_predict))
+
+#uncomment this section to write to file
+file=open('/output/predict_'+name+'.dat','wb')
+prediction=model.predict(to_predict)
+np.savetxt(file, prediction, fmt=['%f', '%f'])
+file.close()
+
 
 
