@@ -14,7 +14,7 @@ from keras.layers import Conv2D
 from keras.layers import MaxPooling2D
 from PIL import Image
 
-def fit_generator(files, batch_size, input_shape,print_stats=True,
+def fit_generator(files, batch_size, input_shape, print_stats=True,
                   one_epoch=False, epoch_sizes=[]):
 
     X = np.zeros((batch_size,) + input_shape)
@@ -88,7 +88,6 @@ def basic_cnn_model_v1(image_shape, metrics=['accuracy']):
 
 filenames = [];
 
-
 rootdir = '/Images/Images/male/'
 
 cnt = 0;
@@ -96,28 +95,24 @@ for root, subFolders, files in os.walk(rootdir):
     for file in files:
         filenames.append(rootdir+'/'+file)
         cnt += 1;
-        if(cnt>10):
-            break;
 
 rootdir = '/Images/Images/female/'
 for root, subFolders, files in os.walk(rootdir):
     for file in files:
         filenames.append(rootdir+'/'+file)
         cnt += 1;
-        if(cnt>20):
-            break;
+
+# cnt_male 5280
+# cnt_female 1409
+# 6689 total
+# one will be missing (6688 divisible by 32)
 
 model = basic_cnn_model_v0((250,250,3))
 
-fg = fit_generator(filenames, 2, (250,250,3))
+fg = fit_generator(filenames, 32, (250,250,3))
 
-# history = model.fit_generator(fg
-#                               , steps_per_epoch=10
-#                               , epochs=10)
-
-# XYZ trying to get code to run on laptop
 history = model.fit_generator(fg
-                              , steps_per_epoch=1
-                              , epochs=1)
+                              , steps_per_epoch=209
+                              , epochs=10)
 
-model.save("/output/face_model.h5")
+model.save("/output/batch2steps10.h5")
