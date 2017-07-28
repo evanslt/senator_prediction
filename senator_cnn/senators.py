@@ -133,8 +133,7 @@ def feedforward_model(image_shape, metrics=['accuracy']):
     return model
 
 filenames = []
-rootdir = '/Users/kkalantar/Documents/GradSchool/CDIPS/senator_prediction/Images/Senators'
-#rootdir = 'Images/Senators'
+rootdir = 'Images/Senators'
 
 # iterate through the images in the directory
 for root, subFolders, files in os.walk(rootdir):
