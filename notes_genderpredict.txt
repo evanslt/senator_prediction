@@ -12,4 +12,6 @@ Prediction attempt here (not all 0s!): https://www.floydhub.com/dominickc/projec
 
 TO DO
 -Data augmentation (shift/blur/rotate/noise examples here: https://github.com/karthikv2k/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
+*NOTE: see senator_cnn/image_modifications.py - kkalantar implemented some of this here for the senator images.
+
 -Pass in test set to predict script
