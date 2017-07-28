@@ -25,7 +25,10 @@ def fit_generator(files, batch_size, input_shape, print_stats=True,
         total_cnt = 0
         batch_cnt = 0
         for f in files:
-            X[batch_cnt, ...] = np.array(Image.open(f))
+            image = np.array(Image.open(f))
+            image = (image - np.mean(image)) / np.var(image) # normalizing/standardizing
+
+            X[batch_cnt, ...] = image
             Y[batch_cnt, ...] = float('female' in f)
             batch_cnt += 1
 
@@ -86,33 +89,44 @@ def basic_cnn_model_v1(image_shape, metrics=['accuracy']):
                   metrics=metrics)
     return model
 
-filenames = [];
+filenames_train = [];
+filenames_test = [];
+
+cnt_male = 0;
+cnt_female = 0;
 
 rootdir = '/Images/Images/male/'
-
-cnt = 0;
 for root, subFolders, files in os.walk(rootdir):
     for file in files:
-        filenames.append(rootdir+'/'+file)
-        cnt += 1;
+        cnt_male += 1;
+        if cnt_male < 1000:
+            filenames_train.append(rootdir + '/' + file)
+        else:
+            filenames_test.append(rootdir + '/' + file)
 
 rootdir = '/Images/Images/female/'
 for root, subFolders, files in os.walk(rootdir):
     for file in files:
-        filenames.append(rootdir+'/'+file)
-        cnt += 1;
+        cnt_female += 1;
+        if cnt_female < 1000:
+            filenames_train.append(rootdir + '/' + file)
+        else:
+            filenames_test.append(rootdir + '/' + file)
 
 # cnt_male 5280
 # cnt_female 1409
 # 6689 total
-# one will be missing (6688 divisible by 32)
+# currently doing 1000 of each gender for training
+# remember to transfer the test set to the predict script
+
+# with full 6689 set, batch 32 steps_per_epoch 209, one will be missing (6688 divisible by 32)
 
 model = basic_cnn_model_v0((250,250,3))
 
-fg = fit_generator(filenames, 32, (250,250,3))
+fg = fit_generator(filenames_train, 16, (250, 250, 3))
 
 history = model.fit_generator(fg
-                              , steps_per_epoch=209
-                              , epochs=10)
+                              , steps_per_epoch=125
+                              , epochs=5)
 
-model.save("/output/batch2steps10.h5")
+model.save("/output/face_model.h5")
