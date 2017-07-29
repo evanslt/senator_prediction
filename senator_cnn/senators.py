@@ -147,7 +147,6 @@ model = cnn_model_v2((130, 100, 1))
 
 #fg = fit_generator(filenames, 16, (130, 100, 1))
 
-<<<<<<< HEAD
 #history = model.fit_generator(fg
 #                              , steps_per_epoch=18
 #                              , epochs=20)
@@ -155,18 +154,8 @@ model = cnn_model_v2((130, 100, 1))
 # calculate accuracy on training set
 X, Y = compile_training_set(filenames, (130, 100, 1))
 model.fit(X, Y, batch_size = 32, epochs = 30, verbose = 1, validation_split = 0.4)
-print(model.predict(X)[:,0])
-=======
-history = model.fit_generator(fg
-                              , steps_per_epoch=18
-                              , epochs=40)
-
-# calculate accuracy on training set
-X, Y = compile_training_set(filenames, (130, 100, 1))
-
 prediction_probabilities = model.predict(X)[:,0]
 print(prediction_probabilities)
->>>>>>> 135bd6a3fc03fa131b409f1fd56877451745fc79
 print(Y)
 #model.save("senator_model.h5")
 
