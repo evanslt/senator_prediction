@@ -37,6 +37,7 @@ for root, subFolders, files in os.walk(rootdir):
 
 for name in men:
 	img = np.array(Image.open("/Images/Images/male/"+name))
+	img = (img - np.mean(img)) / np.var(img)
 	to_predict = np.zeros((1,) + img.shape)
 	to_predict[0,...] = img
 	predictions.append(model.predict(to_predict))
@@ -55,6 +56,7 @@ for root, subFolders, files in os.walk(rootdir):
             
 for name in women:
 	img = np.array(Image.open("/Images/Images/female/"+name))
+	img = (img - np.mean(img)) / np.var(img)
 	to_predict = np.zeros((1,) + img.shape)
 	to_predict[0,...] = img
 	predictions.append(model.predict(to_predict))
