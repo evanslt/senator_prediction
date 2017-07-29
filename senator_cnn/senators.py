@@ -142,14 +142,15 @@ for root, subFolders, files in os.walk(rootdir):
 # generate the model
 model = cnn_model_v2((130, 100, 1))
 
-fg = fit_generator(filenames, 16, (130, 100, 1))
+#fg = fit_generator(filenames, 16, (130, 100, 1))
 
-history = model.fit_generator(fg
-                              , steps_per_epoch=18
-                              , epochs=20)
+#history = model.fit_generator(fg
+#                              , steps_per_epoch=18
+#                              , epochs=20)
 
 # calculate accuracy on training set
 X, Y = compile_training_set(filenames, (130, 100, 1))
+model.fit(X, Y, batch_size = 32, epochs = 30, verbose = 1, validation_split = 0.4)
 print(model.predict(X)[:,0])
 print(Y)
 #model.save("senator_model.h5")
