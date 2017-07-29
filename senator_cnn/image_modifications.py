@@ -64,6 +64,10 @@ def add_noise(X, noise_var = 100):
     X_rnd = np.array(Image.fromarray(X_rnd))
     return Image.fromarray(X_rnd)
 
+def block_face(X):
+    X_len, X_wid, _ = X.shape
+    X[int(0.15 * X_len):int(0.85 * X_len), int(0.15 * X_wid):int(0.85 * X_wid), :] = 0
+    return Image.fromarray(X)
 
 filenames = []
 rootdir = 'Images/Senators'
