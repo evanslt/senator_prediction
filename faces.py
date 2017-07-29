@@ -26,7 +26,8 @@ def fit_generator(files, batch_size, input_shape, print_stats=True,
         batch_cnt = 0
         for f in files:
             image = np.array(Image.open(f))
-            image = (image - np.mean(image)) / np.var(image) # normalizing/standardizing
+            #image = (image - np.mean(image)) / np.var(image) # normalizing/standardizing
+            image = (image - np.mean(image, axis = (0, 1), keepdims = True))/(np.var(image, axis = (0, 1), keepdims = True))
 
             X[batch_cnt, ...] = image
             Y[batch_cnt, ...] = float('female' in f)
@@ -89,25 +90,38 @@ def basic_cnn_model_v1(image_shape, metrics=['accuracy']):
                   metrics=metrics)
     return model
 
+def compile_training_set(files, input_shape):
+    num_train = len(files)
+    X = np.zeros((num_train,) + input_shape)
+    Y = np.zeros(num_train)
+
+    for idx, f in enumerate(files):
+        image = np.array(Image.open(f))
+        # normalize image
+        image = (image - np.mean(image))/np.var(image)
+        X[idx, ...] = np.expand_dims(image, 2) # expand the dimension since keras expects a color channel
+        Y[idx, ...] = float('Winner' in f)
+    return X, Y
+
 filenames_train = [];
 filenames_test = [];
 
 cnt_male = 0;
 cnt_female = 0;
 
-rootdir = '/Images/Images/male/'
+rootdir = 'Images/Images/male/'
 for root, subFolders, files in os.walk(rootdir):
     for file in files:
-        cnt_male += 1;
+        cnt_male += 1
         if cnt_male < 1000:
             filenames_train.append(rootdir + '/' + file)
         else:
             filenames_test.append(rootdir + '/' + file)
 
-rootdir = '/Images/Images/female/'
+rootdir = 'Images/Images/female/'
 for root, subFolders, files in os.walk(rootdir):
     for file in files:
-        cnt_female += 1;
+        cnt_female += 1
         if cnt_female < 1000:
             filenames_train.append(rootdir + '/' + file)
         else:
@@ -127,6 +141,7 @@ fg = fit_generator(filenames_train, 16, (250, 250, 3))
 
 history = model.fit_generator(fg
                               , steps_per_epoch=125
-                              , epochs=5)
+                              , epochs=2)
 
-model.save("/output/face_model.h5")
+model.predict()
+#model.save("/output/face_model.h5")
