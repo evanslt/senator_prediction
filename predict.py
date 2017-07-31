@@ -13,7 +13,7 @@ from keras.layers import MaxPooling2D
 from PIL import Image
 from keras.models import load_model
 
-model = load_model("/out/face_model.h5")
+model = load_model("/out/face_model_2520_b64_e30.h5")
 
 filenames = [];
 
