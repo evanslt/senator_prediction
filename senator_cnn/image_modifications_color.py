@@ -36,12 +36,40 @@ def pad(X):
     right_border = math.floor((faces_dim-cols)/2)
     top_border = math.floor((faces_dim-rows)/2)
     bottom_border = math.ceil((faces_dim-rows)/2)
-    if(top_border < 0):
-        constant = cv2.copyMakeBorder(X,0,0,left_border,right_border,cv2.BORDER_CONSTANT,value=[0,0,0])
-        constant = constant[-1*top_border:bottom_border]
+    if(top_border < 0 or bottom_border < 0):
+
+        if(right_border <0 or left_border < 0):
+            print('D')
+            constant = cv2.copyMakeBorder(X,0,0,0,0,cv2.BORDER_CONSTANT,value=[0,0,0])
+            print("hello")
+            tmp= [i[-1*left_border:(faces_dim-right_border)] for i in constant]
+            constant = np.array(tmp)
+            constant = constant[-1*top_border:(faces_dim-bottom_border)]
+
+        else:
+            print('A')
+            constant = cv2.copyMakeBorder(X,0,0,left_border,right_border,cv2.BORDER_CONSTANT,value=[0,0,0])
+            constant = constant[-1*top_border:(faces_dim-bottom_border)]
+
+
+
+    elif(right_border <0 or left_border < 0):
+        print('C')
+        print(top_border)
+        print(bottom_border)
+        constant = cv2.copyMakeBorder(X,top_border,bottom_border,0,0,cv2.BORDER_CONSTANT,value=[0,0,0])
+        print("hello")
+        tmp= [i[-1*left_border:(faces_dim-right_border)] for i in constant]
+        constant = np.array(tmp)
     else:
+        print('B')
+        print(top_border)
+        print(bottom_border)
+        print(left_border)
+        print(right_border)
         constant = cv2.copyMakeBorder(X,top_border,bottom_border,left_border,right_border,cv2.BORDER_CONSTANT,value=[0,0,0])
     constant = cv2.cvtColor(constant, cv2.COLOR_RGB2BGR)
+    print(type(constant))
     return Image.fromarray(constant)
 
 
