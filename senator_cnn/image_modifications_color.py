@@ -42,25 +42,40 @@ def pad(X):
 
         if(right_border <0 or left_border < 0):
             constant = cv2.copyMakeBorder(X,0,0,0,0,cv2.BORDER_CONSTANT,value=[0,0,0])
-            tmp= [i[-1*left_border:(faces_dim-right_border-1)] for i in constant]
+
+            if((faces_dim-right_border-1) - (-1*left_border))==249:
+                tmp = [i[-1*left_border:(faces_dim-right_border)] for i in constant]
+            else:
+                tmp = [i[-1*left_border:(faces_dim-right_border-1)] for i in constant]
             constant = np.array(tmp)
-            constant = constant[-1*top_border:(faces_dim-bottom_border-1)]
+            if((faces_dim-bottom_border-1) - (-1*top_border))==249:
+                constant = constant[-1*top_border:(faces_dim-bottom_border)]
+            else:
+                constant = constant[-1*top_border:(faces_dim-bottom_border-1)]
 
         else:
             constant = cv2.copyMakeBorder(X,0,0,left_border,right_border,cv2.BORDER_CONSTANT,value=[0,0,0])
-            constant = constant[-1*top_border:(faces_dim-bottom_border-1)]
+            if((faces_dim-bottom_border-1) - (-1*top_border))==249:
+                constant = constant[-1*top_border:(faces_dim-bottom_border)]
+            else:
+                constant = constant[-1*top_border:(faces_dim-bottom_border-1)]
+
 
     elif(right_border <0 or left_border < 0):
         constant = cv2.copyMakeBorder(X,top_border,bottom_border,0,0,cv2.BORDER_CONSTANT,value=[0,0,0])
-        tmp= [i[-1*left_border:(faces_dim-right_border-1)] for i in constant]
+        if((faces_dim-right_border-1) - (-1*left_border))==249:
+            tmp = [i[-1*left_border:(faces_dim-right_border)] for i in constant]
+        else:
+            tmp = [i[-1*left_border:(faces_dim-right_border-1)] for i in constant]
         constant = np.array(tmp)
+
     else:
         constant = cv2.copyMakeBorder(X,top_border,bottom_border,left_border,right_border,cv2.BORDER_CONSTANT,value=[0,0,0])
     constant = cv2.cvtColor(constant, cv2.COLOR_RGB2BGR)
     rows_final,cols_final = constant.shape[0:2]
 
 
-    if(rows_final > 250 or cols_final > 250):
+    if(rows_final != 250 or cols_final != 250):
 
         print('rows:'+str(rows))
         print('cols:'+str(cols))
