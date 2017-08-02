@@ -13,7 +13,7 @@ from keras.layers import MaxPooling2D
 from PIL import Image
 from keras.models import load_model
 
-model = load_model("/out/face_model_6400_b64_e25_s100-reorder-v1.h5")
+model = load_model("/out/face_model_6400_b64_e50-reorder-v0-noise.h5")
 
 filenames_validation = [];
 filenames_test = [];
@@ -106,7 +106,7 @@ print("out of:", np.size(scores_val))
 print("number correct in test:", np.sum(scores_test))
 print("out of:", np.size(scores_test))
 
-file=open('/output/validation-129.dat','wb')
+file=open('/output/validation-139.dat','wb')
 data = np.zeros(np.size(filenames_v_short),dtype=[('1','S20'),('2',float), ('3', float)])
 data['1']=filenames_v_short
 data['2']=pred_val
@@ -115,7 +115,7 @@ np.savetxt(file, data, fmt="%s %f %f")
 file.close()
 
 
-file=open('/output/test-129.dat','wb')
+file=open('/output/test-139.dat','wb')
 data = np.zeros(np.size(filenames_t_short),dtype=[('1','S20'),('2',float), ('3', float)])
 data['1']=filenames_t_short
 data['2']=pred_test
