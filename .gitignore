@@ -12,6 +12,7 @@
 *.png
 *.jpg
 *.bmp
+*.gif
 
 # Packages #
 ############
@@ -55,3 +56,4 @@ Thumbs.db
 
 # random 
 .idea
+.h5

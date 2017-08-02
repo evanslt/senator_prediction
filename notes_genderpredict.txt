@@ -1,17 +1,2 @@
 NOTES
-Full data set (~6000 images), batch size 32, epoch 10 -- 20 min, accuracy 80% 
-Details here: https://www.floydhub.com/xizhou/projects/cdips-test/13
-Prediction attempt on a few images here (all 0s): https://www.floydhub.com/xizhou/projects/cdips-test/14
-
-2000 images, batch size 16, epoch 10 -- 8 minutes, accuracy 50%
-Details here: https://www.floydhub.com/dominickc/projects/cdips-test/1
-
-2000 images, batch size 16, epoch 5, normalized -- 5 minutes, accuracy 83%
-Details here: https://www.floydhub.com/dominickc/projects/cdips-test/2
-Prediction attempt here (not all 0s!): https://www.floydhub.com/dominickc/projects/cdips-test/3
-
-TO DO
--Data augmentation (shift/blur/rotate/noise examples here: https://github.com/karthikv2k/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
-*NOTE: see senator_cnn/image_modifications.py - kkalantar implemented some of this here for the senator images.
-
--Pass in test set to predict script
+https://docs.google.com/spreadsheets/d/1RS1sxN_zTICHNkWiwol_NCDlXoe1Ctel4rYNj1H_4Us/edit#gid=0
