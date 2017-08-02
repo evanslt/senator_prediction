@@ -44,10 +44,13 @@ for root, subFolders, files in os.walk(rootdir):
         if cnt_female >0 and cnt_female<500:
             filenames_validation.append(rootdir+'/'+file)
             #print(file)
-        if cnt_male > 1250:
+        if cnt_female > 1250:
             filenames_test.append(rootdir+'/'+file)
             #break;
 
+
+print("validation samples: ", np.size(filenames_validation))
+print("test samples: ", np.size(filenames_test))
 
 def compile_training_set(files, input_shape):
     num_train = len(files)
