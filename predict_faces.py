@@ -13,7 +13,7 @@ from keras.layers import MaxPooling2D
 from PIL import Image
 from keras.models import load_model
 
-model = load_model("/out/face_model_6400_b64_e50-reorder-v0-noise.h5")
+model = load_model("/out/face_modelv1_somenoise.h5")
 
 filenames_validation = [];
 filenames_test = [];
@@ -28,24 +28,30 @@ rootdir = '/Images/male/'
 for root, subFolders, files in os.walk(rootdir):
     for file in files:
         cnt_male += 1;
-        #if cnt_male > 3870:
-        if cnt_male > 0 and cnt_male<500:
-            filenames_validation.append(rootdir+'/'+file)
-            #print(file)
-        if cnt_male > 5150:
-            filenames_test.append(rootdir+'/'+file)
-            #break;
+        if cnt_male > 0 and cnt_male<50:
+            filenames_validation.append(rootdir+file)
+            print(file)
+        if cnt_male > 3900 and cnt_male<4141:
+            filenames_test.append(rootdir+file)
+        #if cnt_male>4000:
+            #break
+
+
+print("number in val male", np.size(filenames_validation))
+print("number in test male", np.size(filenames_test))
+
+n_male_test=np.size(filenames_test)
 
 rootdir = '/Images/female/'
 for root, subFolders, files in os.walk(rootdir):
     for file in files:
         cnt_female += 1;
         #if cnt_female >1250:
-        if cnt_female >0 and cnt_female<500:
-            filenames_validation.append(rootdir+'/'+file)
+        if cnt_female >0 and cnt_female<50:
+            filenames_validation.append(rootdir+file)
             #print(file)
         if cnt_female > 1250:
-            filenames_test.append(rootdir+'/'+file)
+            filenames_test.append(rootdir+file)
             #break;
 
 
@@ -66,8 +72,10 @@ def compile_training_set(files, input_shape):
         Y[idx, ...] = float('female' in f)
     return X, Y
 
-# calculate accuracy on training set
+# make the validation set out of training data.
 X, Y = compile_training_set(filenames_validation, (250,250,3))
+
+#make the test set out of test data. 
 X_test, Y_test =compile_training_set(filenames_test, (250, 250, 3))
 
 pred_val=model.predict(X)[:, 0]
@@ -88,25 +96,58 @@ for file in filenames_test:
     filenames_t_short.append(file)
 
 for i, val in enumerate(pred_val):
-    diff=val-Y[i]
-    if np.around(diff, decimals=1) == 0:
+    diff=Y[i]-val
+    if np.around(diff) == 0:
         scores_val.append(1)
     else:
         scores_val.append(0)
 
 for i, val in enumerate(pred_test):
-    diff=val-Y_test[i]
-    if np.around(diff, decimals=1) == 0:
+    diff=Y_test[i]-val
+    if np.around(diff) == 0:
         scores_test.append(1)
+        print(diff)
     else:
         scores_test.append(0)
+        #print("Incorrect Test Prediction for:", filenames_test[i], "prediction:", val)
+
+
+
+#find out how many male it gets wrong
+
+wrong_fm=0
+wrong_m=0
+
+for i, val in enumerate(pred_test):
+    diff=val-Y_test[i]
+    if Y_test[i]==1:
+        if np.around(diff)!= 0:
+            print("INCORRECT female", filenames_test[i])
+            wrong_fm+=1;
+        else:
+            continue
+
+    if Y_test[i]==0:
+        if np.around(diff)!= 0:
+            print("INCORRECT male", filenames_test[i])
+            wrong_m+=1
+        else:
+            continue
+
+
+for i, val in enumerate(pred_test):
+    print ("Name: ", filenames_t_short[i], "Pred: ", val)
 
 print("number correct in validation:", np.sum(scores_val))
-print("out of:", np.size(scores_val))
-print("number correct in test:", np.sum(scores_test))
-print("out of:", np.size(scores_test))
+print("out of:", np.size(scores_val), "or ", np.sum(scores_val)/np.size(scores_val))
 
-file=open('/output/validation-139.dat','wb')
+print("number correct in test:", np.sum(scores_test))
+print("out of:", np.size(scores_test), np.sum(scores_test)/np.size(scores_test))
+print("FOR THE TEST ONLY:")
+print("# incorrect female", wrong_fm, "out of", np.size(filenames_test)-n_male_test)
+print("# incorrect male", wrong_m, "out of", n_male_test)
+
+file=open('/output/validation-120.dat','wb')
 data = np.zeros(np.size(filenames_v_short),dtype=[('1','S20'),('2',float), ('3', float)])
 data['1']=filenames_v_short
 data['2']=pred_val
@@ -115,7 +156,7 @@ np.savetxt(file, data, fmt="%s %f %f")
 file.close()
 
 
-file=open('/output/test-139.dat','wb')
+file=open('/output/test-120.dat','wb')
 data = np.zeros(np.size(filenames_t_short),dtype=[('1','S20'),('2',float), ('3', float)])
 data['1']=filenames_t_short
 data['2']=pred_test
