@@ -104,10 +104,10 @@ X_test, Y_test = compile_images(filenames_test, (250, 250, 3))
 
 print("Test results: ", final_model.test_on_batch(X_test, Y_test))
 
-predictions=model.predict(X_test)
+predictions=final_model.predict(X_test)
 
 for i,f in enumerate(filnames_test):
 	print(f, " with truth value: ", Y_test[i], predictions[i])
-	
+
 final_model.save("/output/transfer_modle120.h5")
 
