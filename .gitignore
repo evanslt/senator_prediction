@@ -13,6 +13,7 @@
 *.jpg
 *.bmp
 *.gif
+*.jpeg
 
 # Packages #
 ############
@@ -55,5 +56,6 @@ Thumbs.db
 .ipynb_checkpoints
 
 # random 
-.idea
-.h5
+*.idea
+*.h5
+*.p
